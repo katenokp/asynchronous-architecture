@@ -25,7 +25,7 @@ public class TaskService
                                                GetAssignCost(),
                                                GetCompleteCost());
         
-        await producer.ProduceTaskEvent(new TaskAddedData(taskEntity.PublicId, taskEntity.AssignedTo));
+        await producer.ProduceTaskEvent(new TaskCreatedData(taskEntity.PublicId, taskEntity.AssignedTo));
         await producer.ProduceTaskEvent(new TaskAssignedData(taskEntity.PublicId, taskEntity.AssignedTo));
         return taskEntity;
     }

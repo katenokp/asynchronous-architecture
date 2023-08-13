@@ -29,7 +29,7 @@ public record UserDeletedData(Guid UserId): IMessageData;
 public record UserRoleChangedData(Guid UserId, string Role): IMessageData;
 
 public record TaskAssignedData(Guid TaskId, Guid AssignedToUserId): IMessageData;
-public record TaskAddedData(Guid TaskId, Guid AssignedToUserId): IMessageData;
+public record TaskCreatedData(Guid TaskId, Guid AssignedToUserId): IMessageData;
 public record TaskCompletedData(Guid TaskId, Guid UserId): IMessageData;
 
 public static class Topics
@@ -44,7 +44,7 @@ public static class Topics
 
     public static class TaskTopics
     {
-        public const string Added = "Task.Added";
+        public const string Created = "Task.Streaming.Created";
         public const string Assigned = "Task.Assigned";
         public const string Completed = "Task.Completed";
     }
@@ -75,7 +75,7 @@ public class Producer
     public async Task ProduceUserEvent(UserDeletedData data) => await Produce(Topics.UserTopics.Deleted, data);
     public async Task ProduceUserEvent(UserRoleChangedData data) => await Produce(Topics.UserTopics.RoleChanged, data);
     
-    public async Task ProduceTaskEvent(TaskAddedData data) => await Produce(Topics.TaskTopics.Added, data);
+    public async Task ProduceTaskEvent(TaskCreatedData data) => await Produce(Topics.TaskTopics.Created, data);
     public async Task ProduceTaskEvent(TaskAssignedData data) => await Produce(Topics.TaskTopics.Assigned, data);
     public async Task ProduceTaskEvent(TaskCompletedData data) => await Produce(Topics.TaskTopics.Completed, data);
 }
@@ -88,7 +88,7 @@ public class Consumer
     {
         var config = new ConsumerConfig
                      {
-                         GroupId = "auth-group",
+                         GroupId = "auth-group", //todo получать группу снаружи
                          BootstrapServers = "localhost:9092",
                          AutoOffsetReset = AutoOffsetReset.Earliest
                      };
@@ -119,7 +119,7 @@ public class Consumer
                    Topics.UserTopics.RoleChanged => JsonSerializer.Deserialize<UserRoleChangedData>(data),
 
                    Topics.TaskTopics.Assigned => JsonSerializer.Deserialize<TaskAssignedData>(data),
-                   Topics.TaskTopics.Added => JsonSerializer.Deserialize<TaskAddedData>(data),
+                   Topics.TaskTopics.Created => JsonSerializer.Deserialize<TaskCreatedData>(data),
                    Topics.TaskTopics.Completed => JsonSerializer.Deserialize<TaskCompletedData>(data),
                    _ => default
                };
