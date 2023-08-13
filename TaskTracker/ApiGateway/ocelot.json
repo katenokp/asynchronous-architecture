@@ -1,0 +1,66 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/auth/token?{query}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7201
+        }
+      ],
+      "UpstreamPathTemplate": "/api/token?{query}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "AddHeadersToRequest": {
+        "claims_name": "Claims[Name] > value > |",
+        "claims_role": "Claims[Role] > value > |",
+        "claims_user_id": "Claims[UserId] > value > |"
+      },
+      "DownstreamPathTemplate": "/task/{query}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/task/{query}",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "Key": "inventory"
+    },
+    {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      },
+      "AddHeadersToRequest": {
+        "claims_name": "Claims[Name] > value > |", 
+        "claims_role": "Claims[Role] > value > |",
+        "claims_user_id": "Claims[UserId] > value > |"
+      },
+      "DownstreamPathTemplate": "/users/{query}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7201
+        }
+      ],
+      "UpstreamPathTemplate": "/api/users/{query}",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "Key": "users"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5000"
+  }
+}
