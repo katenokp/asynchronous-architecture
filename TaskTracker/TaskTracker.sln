@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{65016708-AE55-46F7-A6F1-BF4B9DC62C41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "AuthService\AuthService.csproj", "{D0519F35-E7AB-410B-85A0-3CEA323EC14E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement", "TaskManagement\TaskManagement.csproj", "{EB660FD7-E139-439A-94BB-9DD7253E8150}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventProvider", "EventProvider\EventProvider.csproj", "{E63F902B-CD7B-44DA-9E15-FA8B363E31A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65016708-AE55-46F7-A6F1-BF4B9DC62C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65016708-AE55-46F7-A6F1-BF4B9DC62C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65016708-AE55-46F7-A6F1-BF4B9DC62C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65016708-AE55-46F7-A6F1-BF4B9DC62C41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0519F35-E7AB-410B-85A0-3CEA323EC14E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0519F35-E7AB-410B-85A0-3CEA323EC14E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0519F35-E7AB-410B-85A0-3CEA323EC14E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0519F35-E7AB-410B-85A0-3CEA323EC14E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB660FD7-E139-439A-94BB-9DD7253E8150}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB660FD7-E139-439A-94BB-9DD7253E8150}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB660FD7-E139-439A-94BB-9DD7253E8150}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB660FD7-E139-439A-94BB-9DD7253E8150}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E63F902B-CD7B-44DA-9E15-FA8B363E31A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E63F902B-CD7B-44DA-9E15-FA8B363E31A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E63F902B-CD7B-44DA-9E15-FA8B363E31A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E63F902B-CD7B-44DA-9E15-FA8B363E31A3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

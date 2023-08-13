@@ -1,3 +1,8 @@
-/.obsidian/*
-*/*.bkp
-*/*.dtmp
+*/.obsidian/*
+*.bkp
+*.dtmp
+*bin
+*obj
+*/_ReSharper.Caches
+*/.idea/
+*database.db*
