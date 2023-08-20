@@ -1,5 +1,9 @@
-﻿using EventProvider;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using EventProvider;
+using EventProvider.Models.Task.Business;
+using EventProvider.Models.Task.Streaming;
 using Microsoft.EntityFrameworkCore;
+using TaskManagement.Controllers;
 
 namespace TaskManagement;
 
@@ -18,15 +22,23 @@ public class TaskService
         random = new Random();
     }
     
-    public async Task<TaskEntity> Create(string description)
+    public async Task<TaskEntity> Create(AddTaskModel model)
     {
-        var taskEntity = taskRepository.Create(description, 
-                                               GetUserToAssign(), 
+        var taskEntity = taskRepository.Create(model.Title,
+                                               model.Description,
+                                               model.JiraId,
                                                GetAssignCost(),
                                                GetCompleteCost());
+
+        var data = new TaskCreatedDataV1(taskEntity.PublicId, 
+                                         taskEntity.Title, 
+                                         taskEntity.Description, 
+                                         taskEntity.JiraId, 
+                                         taskEntity.AssignTaskCost, 
+                                         taskEntity.CompleteTaskCost);
+        await producer.Produce(Topics.TaskStreaming, data);
         
-        await producer.ProduceTaskEvent(new TaskCreatedData(taskEntity.PublicId, taskEntity.AssignedTo));
-        await producer.ProduceTaskEvent(new TaskAssignedData(taskEntity.PublicId, taskEntity.AssignedTo));
+        await producer.ProduceTaskEvent(new TaskAddedData(taskEntity.PublicId, taskEntity.AssignedTo));
         return taskEntity;
     }
 
@@ -38,7 +50,7 @@ public class TaskService
         {
             var user = availableUsers[random.Next(availableUsers.Length)];
             taskRepository.Update(task.PublicId, t => t.AssignedTo = user.PublicId);
-            await producer.ProduceTaskEvent(new TaskAssignedData(task.PublicId, user.PublicId));
+            await producer.Produce(Topics.TaskLifeCycle, new TaskReassignedDataV1(task.PublicId, user.PublicId));
         }
     }
 
@@ -58,8 +70,24 @@ public class TaskService
         if (userId != task.AssignedTo)
             throw new Exception($"User [{userId}] tried to complete task assigned to user [{task.AssignedTo}]");
                 
-        taskRepository.Update(task.PublicId, t => t.State = TaskState.Completed);
-        await producer.ProduceTaskEvent(new TaskCompletedData(task.PublicId, task.AssignedTo));
+        taskRepository.Update(task.PublicId, t =>
+                                             {
+                                                 t.State = TaskState.Completed;
+                                                 t.CompletedBy = userId;
+                                             });
+        await producer.Produce(Topics.TaskLifeCycle, new TaskCompletedDataV1(task.PublicId, userId));
+    }
+    
+    private async Task AssignTask(TaskEntity taskEntity)
+    {
+        var assignTo = GetUserToAssign();
+        taskRepository.Update(taskEntity.PublicId, t => t.AssignedTo = assignTo);
+        await producer.Produce(Topics.TaskLifeCycle,
+                               new TaskAddedDataV1(taskEntity.PublicId,
+                                                   assignTo,
+                                                   taskEntity.Title,
+                                                   taskEntity.AssignTaskCost,
+                                                   taskEntity.CompleteTaskCost));
     }
 
     private Guid GetUserToAssign()
@@ -82,17 +110,18 @@ public class TaskService
     }
 }
 
-[PrimaryKey("PublicId")]
+[PrimaryKey("Id")]
 public class TaskEntity
 {
-    public static TaskEntity Create(string description, Guid assignedTo, decimal assignTaskCost, decimal completeTaskCost)
+    public static TaskEntity Create(string title, string? description, string? jiraId, decimal assignTaskCost, decimal completeTaskCost)
     {
         var now = DateTime.Now;
         return new TaskEntity
                {
                    PublicId = Guid.NewGuid(),
+                   Title = title,
                    Description = description,
-                   AssignedTo = assignedTo,
+                   JiraId = jiraId,
                    AssignTaskCost = assignTaskCost,
                    CompleteTaskCost = completeTaskCost,
                    Created = now,
@@ -102,21 +131,30 @@ public class TaskEntity
     }
 
     public Guid PublicId { get; set; }
-    public string Description { get; set; }
-    public Guid AssignedTo  { get; set; }
+    public string? Description { get; set; }
+    public string Title { get; set; }
+    public string? JiraId { get; set; }
+    public TaskState State { get; set; }
+    public Guid? AssignedTo  { get; set; }
+    public Guid? CompletedBy  { get; set; }
+    
+    [Column(TypeName = "decimal(5, 2)")]
     public decimal AssignTaskCost { get; set; }
+    
+    [Column(TypeName = "decimal(5, 2)")]
     public decimal CompleteTaskCost { get; set; }
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }
-    public TaskState State { get; set; }
+    public int Id { get; set; }
+
 }
 
 
 public class TaskRepository
 {
-    public TaskEntity Create(string description, Guid assignedTo, decimal assignTaskCost, decimal completeTaskCost)
+    public TaskEntity Create(string title, string? description, string? jiraId, decimal assignTaskCost, decimal completeTaskCost)
     {
-        var taskEntity = TaskEntity.Create(description, assignedTo, assignTaskCost, completeTaskCost);
+        var taskEntity = TaskEntity.Create(title, description, jiraId, assignTaskCost, completeTaskCost);
         
         using var dbContext = new TasksDbContext();
         dbContext.Tasks.Add(taskEntity);
@@ -167,26 +205,4 @@ public enum TaskState
 {
     New,
     Completed
-}
-
-public class User
-{
-    public Guid PublicId { get; set; }
-    public UserRole UserRole { get; set; }
-}
-
-public enum UserRole
-{
-    Manager,
-    User
-}
-
-public class TasksDbContext: DbContext
-{
-    public DbSet<TaskEntity> Tasks { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite(DbHelpers.ConnectionString);
-    }
 }
