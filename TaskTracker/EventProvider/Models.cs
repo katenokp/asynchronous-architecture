@@ -120,6 +120,7 @@ public class Consumer
 
                    Topics.TaskTopics.Assigned => JsonSerializer.Deserialize<TaskAssignedData>(data),
                    Topics.TaskTopics.Added => JsonSerializer.Deserialize<TaskAddedData>(data),
+                   Topics.TaskTopics.Created => JsonSerializer.Deserialize<TaskCreatedData>(data),
                    Topics.TaskTopics.Completed => JsonSerializer.Deserialize<TaskCompletedData>(data),
                    _ => default
                };
