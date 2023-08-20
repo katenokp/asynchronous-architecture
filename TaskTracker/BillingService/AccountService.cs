@@ -1,27 +1,37 @@
-﻿namespace BillingService;
+﻿using EventProvider;
+using EventProvider.Models.Billing;
+
+namespace BillingService;
 
 public class AccountService
 {
     private readonly AccountRepository accountRepository;
     private readonly UserRepository userRepository;
-    private readonly BillingCycleRepository billingCycleRepository;
+    private readonly Producer producer;
 
-    public AccountService(AccountRepository accountRepository, UserRepository userRepository, BillingCycleRepository billingCycleRepository)
+    public AccountService(AccountRepository accountRepository, UserRepository userRepository, Producer producer)
     {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
-        this.billingCycleRepository = billingCycleRepository;
+        this.producer = producer;
     }
     
-    public Account GetOrCreate(Guid userPublicId)
+    public async Task<Account> GetOrCreate(Guid userPublicId)
     {
         var user = userRepository.GetByPublicId(userPublicId) ?? userRepository.Create(userPublicId, string.Empty, UserRole.User);
         var account = accountRepository.GetByUser(user.Id);
         if (account != null)
             return account;
-        
-        
-        return accountRepository.Create(user.Id);
+
+        var newAccount = accountRepository.Create(user.Id);
+        await producer.Produce(Topics.BillingStreaming,
+                               EventNames.AccountCreated,
+                               new AccountCreatedDataV1
+                               {
+                                   PublicId = newAccount.PublicId,
+                                   UserId = user.PublicId
+                               });
+        return newAccount;
     }
     
     public Account Get(int id)

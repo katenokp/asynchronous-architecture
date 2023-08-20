@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "TaskReassignedEventV1",
+  "title": "BillingCycleUpdatedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,27 +37,27 @@
         }
       }
     },
-    "TaskReassignedDataV1": {
+    "BillingCycleUpdatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "TaskId",
-        "AssignedToUserId"
+        "PublicId",
+        "EndDate"
       ],
       "properties": {
-        "TaskId": {
+        "PublicId": {
           "type": "string",
           "format": "guid",
           "minLength": 1
         },
-        "AssignedToUserId": {
+        "EndDate": {
           "type": "string",
-          "format": "guid",
+          "format": "date-time",
           "minLength": 1
         }
       }
     },
-    "EventOfTaskReassignedDataV1": {
+    "EventOfBillingCycleUpdatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -65,14 +65,14 @@
           "$ref": "#/definitions/EventInfo"
         },
         "Data": {
-          "$ref": "#/definitions/TaskReassignedDataV1"
+          "$ref": "#/definitions/BillingCycleUpdatedDataV1"
         }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfTaskReassignedDataV1"
+      "$ref": "#/definitions/EventOfBillingCycleUpdatedDataV1"
     },
     {
       "type": "object",
@@ -86,7 +86,7 @@
           "$ref": "#/definitions/EventInfo"
         },
         "Data": {
-          "$ref": "#/definitions/TaskReassignedDataV1"
+          "$ref": "#/definitions/BillingCycleUpdatedDataV1"
         }
       }
     }

@@ -5,7 +5,7 @@ public static class Topics
     public const string UserStreaming = "user-streaming";
     public const string TaskStreaming = "task-streaming";
     public const string TaskLifeCycle = "task-life-cycle";
-    public const string Billing = "billing";
+    public const string BillingStreaming = "billing-streaming";
 }
 
 public static class EventNames
@@ -16,10 +16,13 @@ public static class EventNames
     
     public const string TaskCreated= "task-created";
     
-    public const string TaskAssigned = "task-assigned";
-    public const string TaskAdded= "task-added";
+    public const string TaskReassigned = "task-reassigned";
+    public const string TaskAdded = "task-added";
     public const string TaskCompleted = "task-completed";
     
-    public const string ManagementBalanceChanged = "management-balance-changed";
-    public const string UserBalanceChanged = "user-balance-changed";
+    public const string TransactionCreated = "transaction-created";
+    public const string AccountCreated = "account-created";
+    public const string BillingCycleUpdated = "billing-cycle-updated";
+    public const string BillingCycleCreated = "billing-cycle-created";
+    public const string AccountUpdated = "account-updated";
 }

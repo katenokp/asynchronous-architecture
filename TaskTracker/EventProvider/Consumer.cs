@@ -45,7 +45,7 @@ public class Consumer
                    
                    EventNames.TaskCreated => JsonSerializer.Deserialize<TaskCreatedEventV1>(data),
                    
-                   EventNames.TaskAssigned => JsonSerializer.Deserialize<TaskReassignedEventV1>(data),
+                   EventNames.TaskReassigned => JsonSerializer.Deserialize<TaskReassignedEventV1>(data),
                    EventNames.TaskAdded => JsonSerializer.Deserialize<TaskAddedEventV1>(data),
                    EventNames.TaskCompleted => JsonSerializer.Deserialize<TaskACompletedEventV1>(data),
                    _ => throw new Exception($"It seems you forgot to to add parser for event name [{eventInfo.Name}]?")

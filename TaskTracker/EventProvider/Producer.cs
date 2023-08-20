@@ -18,9 +18,9 @@ public class Producer
         producer = new ProducerBuilder<Null, string>(config).Build();
     }
 
-    public async Task Produce<TData>(string topic, TData data)
+    public async Task Produce<TData>(string topic, string eventName, TData data)
     {
-        var @event = Event<TData>.Create(producerName, data);
+        var @event = Event<TData>.Create(producerName, data, eventName);
         var errors = await SchemaValidator.Validate(@event);
         if (errors.Any())
             throw new Exception(string.Join(@"\n", errors.Select(x => x.ToString())));

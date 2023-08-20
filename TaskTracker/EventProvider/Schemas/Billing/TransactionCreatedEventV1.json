@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "TaskReassignedEventV1",
+  "title": "TransactionCreatedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,27 +37,60 @@
         }
       }
     },
-    "TaskReassignedDataV1": {
+    "TransactionCreatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "TaskId",
-        "AssignedToUserId"
+        "BillingCyclePublicId",
+        "Description",
+        "Type",
+        "Debit",
+        "Credit",
+        "PublicId"
       ],
       "properties": {
-        "TaskId": {
+        "BillingCyclePublicId": {
           "type": "string",
           "format": "guid",
           "minLength": 1
         },
-        "AssignedToUserId": {
+        "Description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Type": {
+          "$ref": "#/definitions/TransactionType"
+        },
+        "Debit": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "Credit": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "PublicId": {
           "type": "string",
           "format": "guid",
           "minLength": 1
         }
       }
     },
-    "EventOfTaskReassignedDataV1": {
+    "TransactionType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Enrollment",
+        "Withdrawal",
+        "Payment"
+      ],
+      "enum": [
+        1,
+        2,
+        3
+      ]
+    },
+    "EventOfTransactionCreatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -65,14 +98,14 @@
           "$ref": "#/definitions/EventInfo"
         },
         "Data": {
-          "$ref": "#/definitions/TaskReassignedDataV1"
+          "$ref": "#/definitions/TransactionCreatedDataV1"
         }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfTaskReassignedDataV1"
+      "$ref": "#/definitions/EventOfTransactionCreatedDataV1"
     },
     {
       "type": "object",
@@ -86,7 +119,7 @@
           "$ref": "#/definitions/EventInfo"
         },
         "Data": {
-          "$ref": "#/definitions/TaskReassignedDataV1"
+          "$ref": "#/definitions/TransactionCreatedDataV1"
         }
       }
     }

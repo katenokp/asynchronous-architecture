@@ -47,7 +47,7 @@ public class BackgroundExecutor : BackgroundService
                     case UserCreatedEventV1 userCreatedEventV1:
                         var user = userRepository.CreateOrUpdate(userCreatedEventV1.Data);
                         var account = accountRepository.Create(user.Id);
-                        billingService.OpenBillingCycle(account);
+                        await billingService.OpenBillingCycle(account, user.PublicId);
                         break;
                     case UserDeletedEventV1 userDeletedEventV1:
                         userRepository.Delete(userDeletedEventV1.Data);
@@ -59,10 +59,10 @@ public class BackgroundExecutor : BackgroundService
                         taskRepository.Create(taskAddedEventV1.Data);
                         break;
                     case TaskReassignedEventV1 taskAssignedEventV1:
-                        billingService.ApplyEnrollTransaction(taskAssignedEventV1.Data);
+                        await billingService.ApplyEnrollTransaction(taskAssignedEventV1.Data);
                         break;
                     case TaskACompletedEventV1 taskACompletedEventV1:
-                        billingService.ApplyWithdrawTransaction(taskACompletedEventV1.Data);
+                        await billingService.ApplyWithdrawTransaction(taskACompletedEventV1.Data);
                         break;
                 }
             }

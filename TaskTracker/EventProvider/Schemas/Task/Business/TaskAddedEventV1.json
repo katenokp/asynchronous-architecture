@@ -1,20 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "TaskAddedEventV1",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "EventInfo",
-    "Data"
-  ],
-  "properties": {
-    "EventInfo": {
-      "$ref": "#/definitions/EventInfo"
-    },
-    "Data": {
-      "$ref": "#/definitions/TaskAddedDataV1"
-    }
-  },
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -85,6 +71,39 @@
           "format": "decimal"
         }
       }
+    },
+    "EventOfTaskAddedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EventInfo": {
+          "$ref": "#/definitions/EventInfo"
+        },
+        "Data": {
+          "$ref": "#/definitions/TaskAddedDataV1"
+        }
+      }
     }
-  }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/EventOfTaskAddedDataV1"
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
+      "properties": {
+        "EventInfo": {
+          "$ref": "#/definitions/EventInfo"
+        },
+        "Data": {
+          "$ref": "#/definitions/TaskAddedDataV1"
+        }
+      }
+    }
+  ]
 }

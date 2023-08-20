@@ -1,20 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "UserUpdatedEventV1",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "EventInfo",
-    "Data"
-  ],
-  "properties": {
-    "EventInfo": {
-      "$ref": "#/definitions/EventInfo"
-    },
-    "Data": {
-      "$ref": "#/definitions/UserUpdatedDataV1"
-    }
-  },
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -74,6 +60,39 @@
           "minLength": 1
         }
       }
+    },
+    "EventOfUserUpdatedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EventInfo": {
+          "$ref": "#/definitions/EventInfo"
+        },
+        "Data": {
+          "$ref": "#/definitions/UserUpdatedDataV1"
+        }
+      }
     }
-  }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/EventOfUserUpdatedDataV1"
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
+      "properties": {
+        "EventInfo": {
+          "$ref": "#/definitions/EventInfo"
+        },
+        "Data": {
+          "$ref": "#/definitions/UserUpdatedDataV1"
+        }
+      }
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "TaskReassignedEventV1",
+  "title": "AccountUpdatedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,27 +37,26 @@
         }
       }
     },
-    "TaskReassignedDataV1": {
+    "AccountUpdatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "TaskId",
-        "AssignedToUserId"
+        "PublicId",
+        "Balance"
       ],
       "properties": {
-        "TaskId": {
+        "PublicId": {
           "type": "string",
           "format": "guid",
           "minLength": 1
         },
-        "AssignedToUserId": {
-          "type": "string",
-          "format": "guid",
-          "minLength": 1
+        "Balance": {
+          "type": "number",
+          "format": "decimal"
         }
       }
     },
-    "EventOfTaskReassignedDataV1": {
+    "EventOfAccountUpdatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -65,14 +64,14 @@
           "$ref": "#/definitions/EventInfo"
         },
         "Data": {
-          "$ref": "#/definitions/TaskReassignedDataV1"
+          "$ref": "#/definitions/AccountUpdatedDataV1"
         }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfTaskReassignedDataV1"
+      "$ref": "#/definitions/EventOfAccountUpdatedDataV1"
     },
     {
       "type": "object",
@@ -86,7 +85,7 @@
           "$ref": "#/definitions/EventInfo"
         },
         "Data": {
-          "$ref": "#/definitions/TaskReassignedDataV1"
+          "$ref": "#/definitions/AccountUpdatedDataV1"
         }
       }
     }

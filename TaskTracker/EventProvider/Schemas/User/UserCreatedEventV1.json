@@ -1,20 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "UserCreatedEventV1",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "EventInfo",
-    "Data"
-  ],
-  "properties": {
-    "EventInfo": {
-      "$ref": "#/definitions/EventInfo"
-    },
-    "Data": {
-      "$ref": "#/definitions/UserCreatedDataV1"
-    }
-  },
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -74,6 +60,39 @@
           "minLength": 1
         }
       }
+    },
+    "EventOfUserCreatedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EventInfo": {
+          "$ref": "#/definitions/EventInfo"
+        },
+        "Data": {
+          "$ref": "#/definitions/UserCreatedDataV1"
+        }
+      }
     }
-  }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/EventOfUserCreatedDataV1"
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
+      "properties": {
+        "EventInfo": {
+          "$ref": "#/definitions/EventInfo"
+        },
+        "Data": {
+          "$ref": "#/definitions/UserCreatedDataV1"
+        }
+      }
+    }
+  ]
 }

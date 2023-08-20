@@ -36,7 +36,7 @@ public class TaskService
                                          taskEntity.JiraId, 
                                          taskEntity.AssignTaskCost, 
                                          taskEntity.CompleteTaskCost);
-        await producer.Produce(Topics.TaskStreaming, data);
+        await producer.Produce(Topics.TaskStreaming, EventNames.TaskCreated, data);
         return taskEntity;
     }
 
@@ -48,7 +48,9 @@ public class TaskService
         {
             var user = availableUsers[random.Next(availableUsers.Length)];
             taskRepository.Update(task.PublicId, t => t.AssignedTo = user.PublicId);
-            await producer.Produce(Topics.TaskLifeCycle, new TaskReassignedDataV1(task.PublicId, user.PublicId));
+            await producer.Produce(Topics.TaskLifeCycle, 
+                                   EventNames.TaskReassigned,
+                                   new TaskReassignedDataV1(task.PublicId, user.PublicId));
         }
     }
 
@@ -73,7 +75,9 @@ public class TaskService
                                                  t.State = TaskState.Completed;
                                                  t.CompletedBy = userId;
                                              });
-        await producer.Produce(Topics.TaskLifeCycle, new TaskCompletedDataV1(task.PublicId, userId));
+        await producer.Produce(Topics.TaskLifeCycle, 
+                               EventNames.TaskCompleted,
+                               new TaskCompletedDataV1(task.PublicId, userId));
     }
     
     private async Task AssignTask(TaskEntity taskEntity)
@@ -81,6 +85,7 @@ public class TaskService
         var assignTo = GetUserToAssign();
         taskRepository.Update(taskEntity.PublicId, t => t.AssignedTo = assignTo);
         await producer.Produce(Topics.TaskLifeCycle,
+                               EventNames.TaskAdded,
                                new TaskAddedDataV1(taskEntity.PublicId,
                                                    assignTo,
                                                    taskEntity.Title,
@@ -144,7 +149,6 @@ public class TaskEntity
     public DateTime Created { get; set; }
     public DateTime Updated { get; set; }
     public int Id { get; set; }
-
 }
 
 

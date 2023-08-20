@@ -22,7 +22,7 @@ public class UserService
 
         var user = userRepository.Create(newUser.Name, newUser.Password, newUser.Role);
         var data = new UserCreatedDataV1(user.PublicId, user.Name, user.Role.ToString());
-        await producer.Produce(Topics.UserStreaming, data);
+        await producer.Produce(Topics.UserStreaming, EventNames.UserCreated, data);
         return user;
     }
     
@@ -42,13 +42,13 @@ public class UserService
                                            });
 
         var data = new UserUpdatedDataV1(user.PublicId, user.Name, user.Role.ToString());
-        await producer.Produce(Topics.UserStreaming, data);
+        await producer.Produce(Topics.UserStreaming, EventNames.UserUpdated, data);
     }
     
     public async Task Delete(Guid publicId)
     {
         userRepository.Delete(publicId);
-        await producer.Produce(Topics.UserStreaming, new UserDeletedDataV1(publicId));
+        await producer.Produce(Topics.UserStreaming, EventNames.UserDeleted, new UserDeletedDataV1(publicId));
     }
 
     public IEnumerable<User> GetAll()
