@@ -12,6 +12,7 @@ public class User
         Updated = Created;
     }
     public Guid PublicId { get; }
+    public int Id { get; set; }
     public string Name { get; set; }
     public UserRole Role { get; set; }
     public string Password { get; set; }
