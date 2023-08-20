@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "TaskReassignedEventV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "EventInfo",
+    "Data"
+  ],
+  "properties": {
+    "EventInfo": {
+      "$ref": "#/definitions/EventInfo"
+    },
+    "Data": {
+      "$ref": "#/definitions/TaskReassignedDataV1"
+    }
+  },
+  "definitions": {
+    "EventInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "EventId",
+        "Version",
+        "Name",
+        "Time",
+        "Producer"
+      ],
+      "properties": {
+        "EventId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "Version": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Time": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1
+        },
+        "Producer": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "TaskReassignedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "TaskId",
+        "AssignedToUserId"
+      ],
+      "properties": {
+        "TaskId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "AssignedToUserId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

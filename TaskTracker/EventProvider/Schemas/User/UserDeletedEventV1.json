@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "UserDeletedEventV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "EventInfo",
+    "Data"
+  ],
+  "properties": {
+    "EventInfo": {
+      "$ref": "#/definitions/EventInfo"
+    },
+    "Data": {
+      "$ref": "#/definitions/UserDeletedDataV1"
+    }
+  },
+  "definitions": {
+    "EventInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "EventId",
+        "Version",
+        "Name",
+        "Time",
+        "Producer"
+      ],
+      "properties": {
+        "EventId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "Version": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Time": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1
+        },
+        "Producer": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "UserDeletedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "UserId"
+      ],
+      "properties": {
+        "UserId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
