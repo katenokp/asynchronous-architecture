@@ -37,8 +37,6 @@ public class TaskService
                                          taskEntity.AssignTaskCost, 
                                          taskEntity.CompleteTaskCost);
         await producer.Produce(Topics.TaskStreaming, data);
-        
-        await producer.ProduceTaskEvent(new TaskAddedData(taskEntity.PublicId, taskEntity.AssignedTo));
         return taskEntity;
     }
 
