@@ -28,7 +28,7 @@ builder.Services.AddHttpLogging(logging =>
                                     
 
                                 });
-builder.Services.AddSingleton(new Producer());
+builder.Services.AddSingleton(new Producer("auth"));
 builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddSingleton<UserService>();
 
