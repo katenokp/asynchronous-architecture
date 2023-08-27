@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "EventBase",
+  "title": "TaskReassignedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,29 +37,57 @@
         }
       }
     },
-    "EventOfObject": {
+    "TaskReassignedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "TaskId",
+        "AssignedToUserId"
+      ],
+      "properties": {
+        "TaskId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "AssignedToUserId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        }
+      }
+    },
+    "EventOfTaskReassignedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/TaskReassignedDataV1"
+        }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfObject"
+      "$ref": "#/definitions/EventOfTaskReassignedDataV1"
     },
     {
       "type": "object",
       "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/TaskReassignedDataV1"
+        }
       }
     }
   ]

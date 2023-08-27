@@ -58,6 +58,28 @@
       "UpstreamPathTemplate": "/api/users/{query}",
       "UpstreamHttpMethod": [ "Get", "Post" ],
       "Key": "users"
+    },
+    {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "AddHeadersToRequest": {
+        "claims_name": "Claims[Name] > value > |",
+        "claims_role": "Claims[Role] > value > |",
+        "claims_user_id": "Claims[UserId] > value > |"
+      },
+      "DownstreamPathTemplate": "/accounting/{query}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7251
+        }
+      ],
+      "UpstreamPathTemplate": "/api/accounting/{query}",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "Key": "accounting"
     }
   ],
   "GlobalConfiguration": {

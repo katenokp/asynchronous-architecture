@@ -1,20 +1,28 @@
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using EventProvider;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TaskManagement;
-using TaskManagement.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton(new Producer());
+builder.Services.AddSingleton(new Producer("task-management"));
 builder.Services.AddSingleton(new UserRepository());
 builder.Services.AddSingleton<TaskRepository>();
 builder.Services.AddSingleton<TaskService>();
 builder.Services.AddHostedService<ConsumerService>();
+
+builder.Services.AddControllers().AddJsonOptions(opts => {
+                                                     opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                                                     opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                                                     opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                                                     opts.AllowInputFormatterExceptionMessages = true;
+                                                 });
 
 
 builder.Services

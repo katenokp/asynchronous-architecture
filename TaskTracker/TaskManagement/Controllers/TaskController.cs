@@ -18,9 +18,9 @@ public class TaskController : ControllerBase
     }
     
     [HttpPost("add")]
-    public async Task<IActionResult> AddTask([FromBody]string description)
+    public async Task<IActionResult> AddTask([FromBody]AddTaskModel model)
     {
-        var taskEntity = await taskService.Create(description);
+        var taskEntity = await taskService.Create(model);
         return Ok(taskEntity);
     }
     
@@ -102,3 +102,9 @@ public class TaskController : ControllerBase
     }
 }
 
+public class AddTaskModel
+{
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public string? JiraId { get; set; }
+}

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "EventBase",
+  "title": "UserDeletedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,29 +37,51 @@
         }
       }
     },
-    "EventOfObject": {
+    "UserDeletedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "UserId"
+      ],
+      "properties": {
+        "UserId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        }
+      }
+    },
+    "EventOfUserDeletedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/UserDeletedDataV1"
+        }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfObject"
+      "$ref": "#/definitions/EventOfUserDeletedDataV1"
     },
     {
       "type": "object",
       "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/UserDeletedDataV1"
+        }
       }
     }
   ]

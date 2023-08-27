@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "EventBase",
+  "title": "UserUpdatedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,29 +37,61 @@
         }
       }
     },
-    "EventOfObject": {
+    "UserUpdatedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "UserId",
+        "UserName",
+        "UserRole"
+      ],
+      "properties": {
+        "UserId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "UserName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "UserRole": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "EventOfUserUpdatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/UserUpdatedDataV1"
+        }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfObject"
+      "$ref": "#/definitions/EventOfUserUpdatedDataV1"
     },
     {
       "type": "object",
       "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/UserUpdatedDataV1"
+        }
       }
     }
   ]

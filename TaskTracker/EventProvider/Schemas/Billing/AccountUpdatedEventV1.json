@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "EventBase",
+  "title": "AccountUpdatedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,29 +37,56 @@
         }
       }
     },
-    "EventOfObject": {
+    "AccountUpdatedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "PublicId",
+        "Balance"
+      ],
+      "properties": {
+        "PublicId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "Balance": {
+          "type": "number",
+          "format": "decimal"
+        }
+      }
+    },
+    "EventOfAccountUpdatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/AccountUpdatedDataV1"
+        }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfObject"
+      "$ref": "#/definitions/EventOfAccountUpdatedDataV1"
     },
     {
       "type": "object",
       "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/AccountUpdatedDataV1"
+        }
       }
     }
   ]

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "EventBase",
+  "title": "TaskCreatedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,29 +37,78 @@
         }
       }
     },
-    "EventOfObject": {
+    "TaskCreatedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "TaskId",
+        "Title",
+        "AssignCost",
+        "CompleteCost"
+      ],
+      "properties": {
+        "TaskId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "Title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Description": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "JiraId": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "AssignCost": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "CompleteCost": {
+          "type": "number",
+          "format": "decimal"
+        }
+      }
+    },
+    "EventOfTaskCreatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/TaskCreatedDataV1"
+        }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfObject"
+      "$ref": "#/definitions/EventOfTaskCreatedDataV1"
     },
     {
       "type": "object",
       "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/TaskCreatedDataV1"
+        }
       }
     }
   ]

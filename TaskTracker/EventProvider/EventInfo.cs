@@ -18,11 +18,11 @@ public class Event<TData>: IEvent
     public EventInfo EventInfo { get; set; }
     public TData Data { get; set; }
     
-    public static Event<TData> Create(string producerName, TData data)
+    public static Event<TData> Create(string producerName, TData data, string eventName)
     {
         return new Event<TData>
                {
-                   EventInfo = EventInfo.Create(producerName, EventNames.TaskAdded, 1),
+                   EventInfo = EventInfo.Create(producerName, eventName, 1),
                    Data = data
                };
     }

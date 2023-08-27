@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "EventBase",
+  "title": "BillingCycleCreatedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,29 +37,69 @@
         }
       }
     },
-    "EventOfObject": {
+    "BillingCycleCreatedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "PublicId",
+        "StartDate",
+        "AccountId",
+        "UserId"
+      ],
+      "properties": {
+        "PublicId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "StartDate": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1
+        },
+        "AccountId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "UserId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        }
+      }
+    },
+    "EventOfBillingCycleCreatedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/BillingCycleCreatedDataV1"
+        }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfObject"
+      "$ref": "#/definitions/EventOfBillingCycleCreatedDataV1"
     },
     {
       "type": "object",
       "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/BillingCycleCreatedDataV1"
+        }
       }
     }
   ]

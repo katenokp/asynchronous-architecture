@@ -1,4 +1,5 @@
 using EventProvider;
+using EventProvider.Models.User;
 
 namespace TaskManagement;
 
@@ -9,7 +10,7 @@ public class ConsumerService : BackgroundService
 
     public ConsumerService(UserRepository userRepository)
     {
-        consumer = new Consumer(Topics.UserTopics.Registered, Topics.UserTopics.Updated, Topics.UserTopics.Deleted);
+        consumer = new Consumer("task-management-group", new []{Topics.UserStreaming});
         this.userRepository = userRepository;
     }
  
@@ -18,18 +19,18 @@ public class ConsumerService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             var message = consumer.Consume();
-            if (!message.IsEmpty)
+            if (message != null)
 
-                switch (message.Value)
+                switch (message)
                 {
-                    case UserRegisteredData userRegisteredData:
-                        userRepository.Create(userRegisteredData);
+                    case UserCreatedEventV1 userCreatedEventV1:
+                        userRepository.CreateOrUpdate(userCreatedEventV1.Data);
                         break;
-                    case UserDeletedData userDeletedData:
-                        userRepository.Delete(userDeletedData);
+                    case UserDeletedEventV1 userDeletedData:
+                        userRepository.Delete(userDeletedData.Data);
                         break;
-                    case UserUpdatedData userUpdatedData:
-                        userRepository.Update(userUpdatedData);
+                    case UserUpdatedEventV1 userUpdatedData:
+                        userRepository.UpdateOrCreate(userUpdatedData.Data);
                         break;
                 }
 

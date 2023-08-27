@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "EventBase",
+  "title": "TaskACompletedEventV1",
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,29 +37,57 @@
         }
       }
     },
-    "EventOfObject": {
+    "TaskCompletedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "TaskId",
+        "UserId"
+      ],
+      "properties": {
+        "TaskId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "UserId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        }
+      }
+    },
+    "EventOfTaskCompletedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/TaskCompletedDataV1"
+        }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfObject"
+      "$ref": "#/definitions/EventOfTaskCompletedDataV1"
     },
     {
       "type": "object",
       "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
       "properties": {
         "EventInfo": {
           "$ref": "#/definitions/EventInfo"
         },
-        "Data": {}
+        "Data": {
+          "$ref": "#/definitions/TaskCompletedDataV1"
+        }
       }
     }
   ]
