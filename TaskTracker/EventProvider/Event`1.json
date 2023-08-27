@@ -3,6 +3,10 @@
   "title": "Event`1",
   "type": "object",
   "additionalProperties": false,
+  "required": [
+    "EventInfo",
+    "Data"
+  ],
   "properties": {
     "EventInfo": {
       "$ref": "#/definitions/EventInfo"

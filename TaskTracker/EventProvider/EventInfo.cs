@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace EventProvider;
 
@@ -15,7 +16,10 @@ public class EventBase: Event<object>
 
 public class Event<TData>: IEvent
 {
+    [JsonProperty(Required = Required.Always)]
     public EventInfo EventInfo { get; set; }
+    
+    [JsonProperty(Required = Required.Always)]
     public TData Data { get; set; }
     
     public static Event<TData> Create(string producerName, TData data, string eventName)

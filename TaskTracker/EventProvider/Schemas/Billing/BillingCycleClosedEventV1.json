@@ -1,7 +1,23 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "AccountUpdatedEventV1",
+  "title": "BillingCycleClosedEventV1",
   "definitions": {
+    "EventOfBillingCycleClosedDataV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "EventInfo",
+        "Data"
+      ],
+      "properties": {
+        "EventInfo": {
+          "$ref": "#/definitions/EventInfo"
+        },
+        "Data": {
+          "$ref": "#/definitions/BillingCycleClosedDataV1"
+        }
+      }
+    },
     "EventInfo": {
       "type": "object",
       "additionalProperties": false,
@@ -37,12 +53,12 @@
         }
       }
     },
-    "AccountUpdatedDataV1": {
+    "BillingCycleClosedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "PublicId",
-        "Balance"
+        "EndDate"
       ],
       "properties": {
         "PublicId": {
@@ -50,44 +66,21 @@
           "format": "guid",
           "minLength": 1
         },
-        "Balance": {
-          "type": "number",
-          "format": "decimal"
-        }
-      }
-    },
-    "EventOfAccountUpdatedDataV1": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "EventInfo": {
-          "$ref": "#/definitions/EventInfo"
-        },
-        "Data": {
-          "$ref": "#/definitions/AccountUpdatedDataV1"
+        "EndDate": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1
         }
       }
     }
   },
   "allOf": [
     {
-      "$ref": "#/definitions/EventOfAccountUpdatedDataV1"
+      "$ref": "#/definitions/EventOfBillingCycleClosedDataV1"
     },
     {
       "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "EventInfo",
-        "Data"
-      ],
-      "properties": {
-        "EventInfo": {
-          "$ref": "#/definitions/EventInfo"
-        },
-        "Data": {
-          "$ref": "#/definitions/AccountUpdatedDataV1"
-        }
-      }
+      "additionalProperties": false
     }
   ]
 }

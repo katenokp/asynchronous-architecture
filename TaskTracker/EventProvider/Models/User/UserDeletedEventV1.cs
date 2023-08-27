@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NJsonSchema.Annotations;
 
 namespace EventProvider.Models.User;
 
+[JsonSchemaFlatten]
 public class UserDeletedEventV1: Event<UserDeletedDataV1>
 {
-    [Required]
-    public EventInfo EventInfo { get; set; }
-
-    [Required]
-    public UserDeletedDataV1 Data { get; set; }
 }
 
 public class UserDeletedDataV1

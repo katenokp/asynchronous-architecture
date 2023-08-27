@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NJsonSchema.Annotations;
 
 namespace EventProvider.Models.Task.Business;
 
+[JsonSchemaFlatten]
 public class TaskACompletedEventV1: Event<TaskCompletedDataV1>
 {
-    [Required]
-    public EventInfo EventInfo { get; set; }
-    [Required]
-    public TaskCompletedDataV1 Data { get; set; }
 }
 
 public class TaskCompletedDataV1

@@ -26,7 +26,7 @@ public class BillingService
 
     public async Task ApplyEnrollTransaction(TaskReassignedDataV1 data)
     {
-        var account = await accountService.GetOrCreate(data.AssignedToUserId);
+        var account = accountService.GetOrCreate(data.AssignedToUserId);
         var billingCycle = await GetCurrentBillingCycle(account, data.AssignedToUserId);
         var task = taskRepository.Get(data.TaskId);
         if (task == null)
@@ -37,7 +37,7 @@ public class BillingService
     
     public async Task ApplyWithdrawTransaction(TaskCompletedDataV1 data)
     {
-        var account = await accountService.GetOrCreate(data.UserId);
+        var account = accountService.GetOrCreate(data.UserId);
         var billingCycle = await GetCurrentBillingCycle(account, data.UserId);
         var task = taskRepository.Get(data.TaskId);
         if (task == null)
@@ -48,7 +48,7 @@ public class BillingService
 
     public async Task Close(User user)
     {
-        var account = await accountService.GetOrCreate(user.PublicId);
+        var account = accountService.GetOrCreate(user.PublicId);
         var billingCycle = billingCycleRepository.GetOpened(account.Id);
         if (billingCycle == null)
             return;
@@ -65,29 +65,26 @@ public class BillingService
         await dbContext.SaveChangesAsync();
         await dbTransaction.CommitAsync();
         
-        await producer.Produce(Topics.BillingStreaming,
-                               EventNames.TransactionCreated,
-                               new TransactionCreatedDataV1(billingCycle.PublicId,
+        await producer.Produce(Topics.Billing,
+                               EventNames.TransactionApplied,
+                               new TransactionAppliedDataV1(billingCycle.PublicId,
                                                             transaction.Description,
                                                             Enum.Parse<EventProvider.Models.Billing.TransactionType>(transaction.Type.ToString()),
                                                             transaction.Debit,
                                                             transaction.Credit,
                                                             transaction.PublicId));
-        await producer.Produce(Topics.BillingStreaming,
-                               EventNames.AccountUpdated,
-                               new AccountUpdatedDataV1(account.PublicId, account.Balance));
 
-        await producer.Produce(Topics.BillingStreaming,
-                               EventNames.BillingCycleUpdated,
-                               new BillingCycleUpdatedDataV1(billingCycle.PublicId, DateTime.Now));
+        await producer.Produce(Topics.Billing,
+                               EventNames.BillingCycleClosed,
+                               new BillingCycleClosedDataV1(billingCycle.PublicId, DateTime.Now));
     }
     
     public async Task<BillingCycle> OpenBillingCycle(Account account, Guid userPublicId)
     {
         var billingCycle = billingCycleRepository.Create(account.Id);
-        await producer.Produce(Topics.BillingStreaming,
-                               EventNames.BillingCycleCreated,
-                               new BillingCycleCreatedDataV1(billingCycle.PublicId,
+        await producer.Produce(Topics.Billing,
+                               EventNames.BillingCycleOpened,
+                               new BillingCycleOpenedDataV1(billingCycle.PublicId,
                                                              account.PublicId,
                                                              userPublicId,
                                                              DateTime.Now));
@@ -122,21 +119,14 @@ public class BillingService
         await dbContext.SaveChangesAsync();
         await dbTransaction.CommitAsync();
         
-        await producer.Produce(Topics.BillingStreaming,
-                               EventNames.TransactionCreated,
-                               new TransactionCreatedDataV1(billingCycle.PublicId,
+        await producer.Produce(Topics.Billing,
+                               EventNames.TransactionApplied,
+                               new TransactionAppliedDataV1(billingCycle.PublicId,
                                                             transaction.Description,
                                                             Enum.Parse<EventProvider.Models.Billing.TransactionType>(transaction.Type.ToString()),
                                                             transaction.Debit,
                                                             transaction.Credit,
                                                             transaction.PublicId));
-        await producer.Produce(Topics.BillingStreaming,
-                               EventNames.AccountUpdated,
-                               new AccountUpdatedDataV1
-                               {
-                                   PublicId = account.PublicId,
-                                   Balance = account.Balance
-                               });
     }
 
     private static Transaction MakeTransaction(int billingCycleId, decimal debitSum, decimal creditSum, string description, TransactionType type)
