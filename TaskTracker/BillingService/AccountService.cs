@@ -1,5 +1,4 @@
 ﻿using EventProvider;
-using EventProvider.Models.Billing;
 
 namespace BillingService;
 
@@ -16,22 +15,11 @@ public class AccountService
         this.producer = producer;
     }
     
-    public async Task<Account> GetOrCreate(Guid userPublicId)
+    public Account GetOrCreate(Guid userPublicId)
     {
         var user = userRepository.GetByPublicId(userPublicId) ?? userRepository.Create(userPublicId, string.Empty, UserRole.User);
         var account = accountRepository.GetByUser(user.Id);
-        if (account != null)
-            return account;
-
-        var newAccount = accountRepository.Create(user.Id);
-        await producer.Produce(Topics.BillingStreaming,
-                               EventNames.AccountCreated,
-                               new AccountCreatedDataV1
-                               {
-                                   PublicId = newAccount.PublicId,
-                                   UserId = user.PublicId
-                               });
-        return newAccount;
+        return account ?? accountRepository.Create(user.Id);
     }
     
     public Account Get(int id)

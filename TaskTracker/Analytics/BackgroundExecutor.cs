@@ -16,7 +16,7 @@ public class Storage
         dbContext.Add(entity);
         dbContext.SaveChanges();
     }
-    
+
     public void UpdateUser(Guid publicId, Action<User> modifier)
     {
         using var dbContext = new AnalyticsDbContext();
@@ -56,23 +56,12 @@ public class Storage
         dbContext.Update(entity);
         dbContext.SaveChanges();
     }
-    
-    public void UpdateAccount(Guid publicId, Action<Account> modifier)
-    {
-        using var dbContext = new AnalyticsDbContext();
-        var entity = dbContext.Accounts.Single(x => x.PublicId == publicId);
-        modifier.Invoke(entity);
-        entity.Updated = DateTime.Now;
-        dbContext.Update(entity);
-        dbContext.SaveChanges();
-    }
 }
 
 public class AnalyticsDbContext: DbContext
 {
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<BillingCycle> BillingCycles { get; set; }
-    public DbSet<Account> Accounts { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<TaskEntity> Tasks { get; set; }
 
@@ -94,7 +83,7 @@ public class BackgroundExecutor : BackgroundService
                                                    {
                                                        Topics.UserStreaming,
                                                        Topics.TaskLifeCycle,
-                                                       Topics.BillingStreaming,
+                                                       Topics.Billing,
                                                    });
     }
  
@@ -131,20 +120,14 @@ public class BackgroundExecutor : BackgroundService
                     case TaskACompletedEventV1 taskACompletedEventV1:
                         CompleteTask(taskACompletedEventV1.Data);
                         break;
-                    case TransactionCreatedEventV1 transactionCreatedEventV1:
+                    case TransactionAppliedEventV1 transactionCreatedEventV1:
                         CreateTransaction(transactionCreatedEventV1.Data);
                         break;
-                    case BillingCycleCreatedEventV1 billingCycleCreatedEventV1:
+                    case BillingCycleOpenedEventV1 billingCycleCreatedEventV1:
                         CreateBillingCycle(billingCycleCreatedEventV1.Data);
                         break;
-                    case BillingCycleUpdatedEventV1 billingCycleUpdatedEventV1:
-                        UpdateBillingCycle(billingCycleUpdatedEventV1.Data);
-                        break;
-                    case AccountCreatedEventV1 accountCreatedEventV1:
-                        CreateAccount(accountCreatedEventV1.Data);
-                        break;
-                    case AccountUpdatedEventV1 accountUpdatedEventV1:
-                        UpdateAccount(accountUpdatedEventV1.Data);
+                    case BillingCycleClosedEventV1 billingCycleUpdatedEventV1:
+                        CloseBillingCycle(billingCycleUpdatedEventV1.Data);
                         break;
                 }
             }
@@ -155,30 +138,14 @@ public class BackgroundExecutor : BackgroundService
 
         return Task.CompletedTask;
     }
+    
 
-    private void UpdateAccount(AccountUpdatedDataV1 data)
-    {
-        storage.UpdateAccount(data.PublicId, x => x.Balance = data.Balance);
-    }
-
-    private void CreateAccount(AccountCreatedDataV1 data)
-    {
-        storage.Save(new Account
-                     {
-                         PublicId = data.PublicId,
-                         Created = DateTime.Now,
-                         Updated = DateTime.Now,
-                         Balance = 0,
-                         UserPublicId = data.UserId,
-                     });
-    }
-
-    private void UpdateBillingCycle(BillingCycleUpdatedDataV1 data)
+    private void CloseBillingCycle(BillingCycleClosedDataV1 data)
     {
         storage.UpdateBillingCycle(data.PublicId, x => x.EndDate = data.EndDate);
     }
 
-    private void CreateBillingCycle(BillingCycleCreatedDataV1 data)
+    private void CreateBillingCycle(BillingCycleOpenedDataV1 data)
     {
         storage.Save(new BillingCycle
                      {
@@ -190,7 +157,7 @@ public class BackgroundExecutor : BackgroundService
                      });
     }
 
-    private void CreateTransaction(TransactionCreatedDataV1 data)
+    private void CreateTransaction(TransactionAppliedDataV1 data)
     {
         storage.Save(new Transaction
                      {

@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NJsonSchema.Annotations;
 
 namespace EventProvider.Models.Task.Streaming;
 
+[JsonSchemaFlatten]
 public class TaskCreatedEventV1: Event<TaskCreatedDataV1>
 {
-    [Required]
-    public EventInfo EventInfo { get; set; }
-    [Required]
-    public TaskCreatedDataV1 Data { get; set; }
 }
 
 public class TaskCreatedDataV1

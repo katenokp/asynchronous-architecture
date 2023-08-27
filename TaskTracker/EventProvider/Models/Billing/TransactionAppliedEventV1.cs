@@ -1,18 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NJsonSchema.Annotations;
 
 namespace EventProvider.Models.Billing;
 
-public class TransactionCreatedEventV1: Event<TransactionCreatedDataV1>
+[JsonSchemaFlatten]
+public class TransactionAppliedEventV1: Event<TransactionAppliedDataV1>
 {
-    [Required]
-    public EventInfo EventInfo { get; set; }
-    [Required]
-    public TransactionCreatedDataV1 Data { get; set; }
 }
 
-public class TransactionCreatedDataV1
+public class TransactionAppliedDataV1
 {
-    public TransactionCreatedDataV1(Guid billingCyclePublicId, string description, TransactionType type, decimal debit, decimal credit, Guid publicId)
+    public TransactionAppliedDataV1(Guid billingCyclePublicId, string description, TransactionType type, decimal debit, decimal credit, Guid publicId)
     {
         BillingCyclePublicId = billingCyclePublicId;
         Description = description;
@@ -22,7 +20,7 @@ public class TransactionCreatedDataV1
         PublicId = publicId;
     }
 
-    public TransactionCreatedDataV1()
+    public TransactionAppliedDataV1()
     {
     }
     

@@ -1,6 +1,20 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "AccountCreatedEventV1",
+  "title": "TransactionAppliedEventV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "EventInfo",
+    "Data"
+  ],
+  "properties": {
+    "EventInfo": {
+      "$ref": "#/definitions/EventInfo"
+    },
+    "Data": {
+      "$ref": "#/definitions/TransactionAppliedDataV1"
+    }
+  },
   "definitions": {
     "EventInfo": {
       "type": "object",
@@ -37,58 +51,58 @@
         }
       }
     },
-    "AccountCreatedDataV1": {
+    "TransactionAppliedDataV1": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "PublicId",
-        "UserId"
+        "BillingCyclePublicId",
+        "Description",
+        "Type",
+        "Debit",
+        "Credit",
+        "PublicId"
       ],
       "properties": {
+        "BillingCyclePublicId": {
+          "type": "string",
+          "format": "guid",
+          "minLength": 1
+        },
+        "Description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "Type": {
+          "$ref": "#/definitions/TransactionType"
+        },
+        "Debit": {
+          "type": "number",
+          "format": "decimal"
+        },
+        "Credit": {
+          "type": "number",
+          "format": "decimal"
+        },
         "PublicId": {
           "type": "string",
           "format": "guid",
           "minLength": 1
-        },
-        "UserId": {
-          "type": "string",
-          "format": "guid",
-          "minLength": 1
         }
       }
     },
-    "EventOfAccountCreatedDataV1": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "EventInfo": {
-          "$ref": "#/definitions/EventInfo"
-        },
-        "Data": {
-          "$ref": "#/definitions/AccountCreatedDataV1"
-        }
-      }
-    }
-  },
-  "allOf": [
-    {
-      "$ref": "#/definitions/EventOfAccountCreatedDataV1"
-    },
-    {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "EventInfo",
-        "Data"
+    "TransactionType": {
+      "type": "integer",
+      "description": "",
+      "x-enumNames": [
+        "Enrollment",
+        "Withdrawal",
+        "Payment"
       ],
-      "properties": {
-        "EventInfo": {
-          "$ref": "#/definitions/EventInfo"
-        },
-        "Data": {
-          "$ref": "#/definitions/AccountCreatedDataV1"
-        }
-      }
+      "enum": [
+        1,
+        2,
+        3
+      ]
     }
-  ]
+  }
 }

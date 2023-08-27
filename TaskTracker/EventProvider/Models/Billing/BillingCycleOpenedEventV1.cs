@@ -1,18 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NJsonSchema.Annotations;
 
 namespace EventProvider.Models.Billing;
 
-public class BillingCycleCreatedEventV1: Event<BillingCycleCreatedDataV1>
+[JsonSchemaFlatten]
+public class BillingCycleOpenedEventV1: Event<BillingCycleOpenedDataV1>
 {
-    [Required]
-    public EventInfo EventInfo { get; set; }
-    [Required]
-    public BillingCycleCreatedDataV1 Data { get; set; }
 }
 
-public class BillingCycleCreatedDataV1
+public class BillingCycleOpenedDataV1
 {
-    public BillingCycleCreatedDataV1(Guid publicId, Guid accountId, Guid userId, DateTime startDate)
+    public BillingCycleOpenedDataV1(Guid publicId, Guid accountId, Guid userId, DateTime startDate)
     {
         PublicId = publicId;
         AccountId = accountId;
@@ -20,7 +18,7 @@ public class BillingCycleCreatedDataV1
         StartDate = startDate;
     }
 
-    public BillingCycleCreatedDataV1()
+    public BillingCycleOpenedDataV1()
     {
     }
     
